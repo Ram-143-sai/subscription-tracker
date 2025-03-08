@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="subscription-stats">
+    <p>Total Subscriptions: {{ subscriptions|length }}</p>
+    <p>Upcoming Trials: {{ upcoming_trials|length }}</p>
+</div>
+
+<h2>Add Subscription</h2>
+<form method="POST" action="{{ url_for('main.add_subscription') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.name.label }} {{ form.name() }}
+    </div>
+    <div class="form-group">
+        {{ form.start_date.label }} {{ form.start_date() }}
+    </div>
+    <div class="form-group">
+        {{ form.end_date.label }} {{ form.end_date() }}
+    </div>
+    <div class="form-group">
+        {{ form.price.label }} {{ form.price() }}
+    </div>
+    <div class="form-group">
+        {{ form.trial_end.label }} {{ form.trial_end() }}
+    </div>
+    <div class="form-group">
+        {{ form.cancellation_link.label }} {{ form.cancellation_link() }}
+    </div>
+    {{ form.submit() }}
+</form>
+
+<h2>Active Subscriptions</h2>
+<div class="subscriptions">
+    {% for sub in subscriptions %}
+    <div class="subscription-item">
+        <h3>{{ sub.name }}</h3>
+        <p>Start: {{ sub.start_date.strftime('%Y-%m-%d') }}</p>
+        <p>End: {{ sub.end_date.strftime('%Y-%m-%d') }}</p>
+        <p>Price: ${{ '%.2f'|format(sub.price) }}</p>
+        <p>Trial Ends: {{ sub.trial_end.strftime('%Y-%m-%d') }}</p>
+        <a href="{{ sub.cancellation_link }}" target="_blank">Cancel Subscription</a>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>Upcoming Trials</h2>
+<div class="calendar">
+    {% for sub in upcoming_trials %}
+    <div class="subscription-item">
+        <h3>{{ sub.name }}</h3>
+        <p>Trial ends on {{ sub.trial_end.strftime('%Y-%m-%d') }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
